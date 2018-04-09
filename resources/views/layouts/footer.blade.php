@@ -1,0 +1,1 @@
+<strong>COPYRIGHT &nbsp</strong>&copy; <?php echo date("Y"); ?><strong>&nbsp PT ANGKASA PURA I (PERSERO)</strong>
