@@ -9,12 +9,20 @@
     <meta name="viewport" content="widtd=device-widtd, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <style>
-        html{
-            margin : 2.5cm 3cm 2.5cm 3cm;
+        html
+        {
+            margin: 1.5cm 1.5cm 2cm 2cm;
         }
-        td, th {
+        .atas td, th {
             text-align: left;
             padding: 8px;
+        }
+        .bawah td, th {
+            padding-bottom: 20px;
+        }
+        .bawah .terima {
+            padding-left: 25%;
+            text-align: center;
         }
     </style>
     <title>{{ $newname }}</title>
@@ -27,14 +35,14 @@
     <center>
         TANDA TERIMA JAMINAN PENAWARAN <br> {{ $cek->no_terima }} <br><br><br><br>
     </center>
-        <table>
+        <table class="atas">
             <tr>
                 <td>NAMA PERUSAHAAN </td>
                 <td> : {{ $cek->vendor_id }}</td>
             </tr>
             <tr>
                 <td>BANK PENJAMIN </td>
-                <td> : {{ $cek->bank_id }}</td>
+                <td> : {{ $cek->nama_bank }}</td>
             </tr>
             <tr>
                 <td>NOMOR GARANSI BANK </td>
@@ -78,17 +86,12 @@
             </tr>
         </table>
         <p style="text-align : right; margin-top: 50px;">
-            Nama Wilayah, {{ $date }}
+            {{ $cek->wilayah }}, {{ $date }}
         </p>
-        <table>
+        <table class="bawah" width="100%">
             <tr>
                 <td>Menyerahkan, </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td style="text-align:center">Menerima, <br> Dept. Head/Section Head Bidang Treasury/Finance</td>
+                <td class="terima">Menerima, <br> Dept. Head/Section Head Bidang Treasury/Finance</td>
             </tr>
             <tr>
                 <td></td>
@@ -101,12 +104,7 @@
             </tr>
             <tr>
                 <td>(......................)</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td style="text-align:center">(.......................)</td>
+                <td class="terima">(.......................)</td>
             </tr>
         </table>
         <p style="margin-top: 45px;">*) Catatan : penarikan bank garansi jaminan penawaran ini hanya dapat dilakukan selama 30 hari sejak berakhirnya masa sanggah</p>

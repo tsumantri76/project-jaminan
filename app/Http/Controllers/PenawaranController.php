@@ -14,8 +14,8 @@ class PenawaranController extends Controller
     public function indexbg()
     {
         $bg = DB::table('penawaranbgs')
-                ->join('rekenings', 'rekenings.id','=','penawaranbgs.bank_id')
-                ->select('penawaranbgs.*', 'rekenings.nama_bank')
+                ->join('banks', 'banks.id','=','penawaranbgs.bank_id')
+                ->select('penawaranbgs.*', 'banks.nama_bank')
                 ->get();
         return view('penawaranbg.index', compact('bg'));
     }
@@ -80,6 +80,7 @@ class PenawaranController extends Controller
             'no_urut'       =>substr($request->no_terima, 3, 4)
         ];
 
+        // dd($cek);
         $tawar = DB::table('penawaranbgs')->insert($cek);
         return redirect('admin/penawaran_bg');
     }
@@ -153,7 +154,10 @@ class PenawaranController extends Controller
 
     public function printbg($id)
     {
-        $cek = DB::table('penawaranbgs')->where('id', $id)->first();
+        $cek = DB::table('penawaranbgs')
+                    ->join('banks', 'banks.id','=','penawaranbgs.bank_id')
+                    ->select('penawaranbgs.*', 'banks.nama_bank')
+                    ->where('penawaranbgs.id', $id)->first();
         $printname = 'WAR-BG'.Carbon::now('Asia/Jakarta')->format('Ymdhis');
         $pdf = PDF::loadView('penawaranbg.show', compact('cek'))->setPaper('a4', 'potrait')->setWarnings(false);
         return $pdf->stream($printname.'.pdf');
