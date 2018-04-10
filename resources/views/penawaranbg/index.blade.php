@@ -51,9 +51,9 @@
                       <th>{{ $row->no_terima }}</th>
                       <th>{{ $row->vendor_id }}</th>
                       <th>{{ $row->nama_bank }}</th>
-                      <th>Rp. {{ number_format($row->nominal_jambg,2,',','.') }}</th>
+                      <th>{{ kerp($row->nominal_jambg) }}</th>
                       <th>{{ $row->pekerjaan }}</th>
-                      <th>{{ $row->tgl_berakhir }}</th>
+                      <th>{{ strtodate($row->tgl_berakhir) }}</th>
                       <td>
                         <center>
                           <form action="" method="POST">

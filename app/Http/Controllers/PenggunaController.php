@@ -52,4 +52,12 @@ class PenggunaController extends Controller
         $query = DB::table('users')->insert($data);
         return redirect('admin/setting_user');
     }
+    public function edit(Request $request, $id)
+    {
+        $users = DB::table('users')
+                    ->join('profits','profits.id','=','users.profit_id')
+                    ->join('roles','roles.id','=','users.role_id')
+                    ->select('users.*', 'profits.kode_profit', 'roles.')
+                    ->where('id', $id)->first();
+    }
 }

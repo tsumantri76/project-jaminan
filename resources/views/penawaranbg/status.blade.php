@@ -8,7 +8,7 @@
       <div class="col-xs-12">
         <h3 class="page-header">
           {{ $cek->no_terima }}
-          <small class="pull-right">{{ $cek->created_at }}</small>
+          <small class="pull-right">Dibuat Tanggal : {{ strtodate($cek->created_at) }}</small>
         </h3>
       </div>
       <!-- /.col -->
@@ -33,7 +33,7 @@
             <strong>: {{ $cek->nama_bank }}</strong><br>
             <strong>: {{ $cek->no_bankgr }}</strong><br>
             <strong>: {{ $cek->seri_bankgr }}</strong><br>
-            <strong>: {{ $cek->tgl_bankgr }}</strong><br>
+            <strong>: {{ strtodate($cek->tgl_bankgr) }}</strong><br>
         </address>
       </div>
       <div class="col-sm-3 invoice-col">
@@ -52,9 +52,9 @@
             <strong>: Rp. {{ number_format($cek->nominal_jambg,2,',','.') }}</strong><br>
             <strong>: {{ $cek->no_berita }}</strong><br>
             <strong>: {{ $cek->pekerjaan }}</strong><br>
-            <strong>: {{ $cek->tgl_berlaku }}</strong><br>
-            <strong>: {{ $cek->tgl_berakhir }}</strong><br>
-            <strong>: {{ $cek->min_tarik_jaminan }}</strong><br>
+            <strong>: {{ strtodate($cek->tgl_berlaku) }}</strong><br>
+            <strong>: {{ strtodate($cek->tgl_berakhir) }}</strong><br>
+            <strong>: {{ strtodate($cek->min_tarik_jaminan) }}</strong><br>
         </address>
       </div>
       <!-- /.col -->

@@ -5,11 +5,11 @@
       <!-- Content Header (Page header) -->
       <section class="content-header">
         <h1>
-          Pelaksanaan Tunai
+          Penawaran Tunai
         </h1>
         <ol class="breadcrumb">
           <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-          <li class="active">Data Pelaksanaan Tunai</li>
+          <li class="active">Data Penawaran Tunai</li>
         </ol>
       </section>
 
@@ -34,37 +34,24 @@
                     <th>No</th>
                     <th>Surat Keterangan</th>
                     <th>Vendor</th>
-                    <th>Bank Peminjam</th>
-                    <th>No Tunai</th>
-                    <th>Seri Tunai</th>
-                    <th>Tanggal Tunai</th>
+                    <th>Bank Penjamin</th>
                     <th>Nominal Jaminan</th>
-                    <th>No Berita Aanwijzing</th>
                     <th>Nama Pekerjaan</th>
-                    <th>Masa Berlaku</th>
-                    <th>Jatuh Tempo</th>
-                    <th>Min. Tanggal Penarikan</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
+                    <th>Jatuh Tempo</th>                    
+                    <th width="10%">Pilihan</th>
                   </tr>
                   </thead>
                   <tbody>
-                  @foreach($bg as $row)
+                  @php $no = 1; @endphp
+                  @foreach($tunai as $row)
                     <tr>
-                      <th>No</th>
-                      <th>Surat Keterangan</th>
-                      <th>Vendor</th>
-                      <th>Bank Peminjam</th>
-                      <th>No Tunai</th>
-                      <th>Seri Tunai</th>
-                      <th>Tanggal Tunai</th>
-                      <th>Nominal Jaminan</th>
-                      <th>No Berita Aanwijzing</th>
-                      <th>Nama Pekerjaan</th>
-                      <th>Masa Berlaku</th>
-                      <th>Jatuh Tempo</th>
-                      <th>Min. Tanggal Penarikan</th>
-                      <th>Status</th>
+                        <td>{{ $no++ }}</td>
+                        <td>{{ $row->no_terima }}</td>
+                        <td>{{ $row->vendor_id }}</td>
+                        <td>{{ $row->nama_bank }}</td>
+                        <td>{{ kerp($row->nominal_jamper) }}</td>
+                        <td>{{ $row->pekerjaan }}</td>
+                        <td>{{ strtodate($row->jatuh_tempo) }}</td>
                       <td>
                         <center>
                           <form action="" method="POST">
@@ -72,17 +59,17 @@
                             {{ method_field('DELETE') }}
 
                             <span>
-                                <a class="btn btn-info btn-xs" title="Detail" href="">
-                                    <i class='glyphicon glyphicon-list'></i>
+                                <a class="btn btn-info btn-xs" title="Update Status" data-toggle="tooltip" href="">
+                                    <i class='glyphicon glyphicon-plus'></i>
                                 </a>
                             </span>
                             <span>
-                                <a class="btn btn-primary btn-xs" title="Edit Data" href=") }}">
+                                <a class="btn btn-primary btn-xs" title="Edit Data" data-toggle="tooltip" href="">
                                     <i class='glyphicon glyphicon-edit'></i>
                                 </a>
                             </span>
                             <span>
-                                <button class="btn btn-danger btn-xs" title="Hapus Data" type="submit">
+                                <button class="btn btn-danger btn-xs" title="Hapus Data" data-toggle="tooltip" type="submit">
                                   <i class='glyphicon glyphicon-trash'></i>
                                 </button>
                             </span>
@@ -94,25 +81,6 @@
                   @endforeach
                   
                   </tbody>
-                  <tfoot>
-                  <tr>
-                    <th>No</th>
-                    <th>Surat Keterangan</th>
-                    <th>Vendor</th>
-                    <th>Bank Peminjam</th>
-                    <th>No Tunai</th>
-                    <th>Seri Tunai</th>
-                    <th>Tanggal Tunai</th>
-                    <th>Nominal Jaminan</th>
-                    <th>No Berita Aanwijzing</th>
-                    <th>Nama Pekerjaan</th>
-                    <th>Masa Berlaku</th>
-                    <th>Jatuh Tempo</th>
-                    <th>Min. Tanggal Penarikan</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                  </tr>
-                  </tfoot>
                 </table>
               </div>
               <!-- /.box-body -->

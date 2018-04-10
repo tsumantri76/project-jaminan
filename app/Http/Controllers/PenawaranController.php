@@ -45,7 +45,7 @@ class PenawaranController extends Controller
         $uploadedFile = $request->file('file');
         $originalname = $uploadedFile->getClientOriginalName();
         $originalext  = $uploadedFile->getClientOriginalExtension();
-        $newname = $request->nama_file.'.'.$originalext;
+        $newname = $originalname.'.'.$originalext;
         $path = $uploadedFile->store('public/files');
 
         $min = date('Y-m-d', strtotime($request->masa_sanggah.'days', strtotime($request->tgl_berakhir)));
@@ -71,7 +71,7 @@ class PenawaranController extends Controller
             'max_tarik_jaminan' =>$max,
             'unit_id'       =>$request->unit_id,
             'user_id'       =>$request->user_id,
-            'nama_file'     =>$uploadedFile,
+            'nama_file'     =>$newname,
             'path_file'     =>$path,
             'ket'           =>$request->ket,
             'created_at'    => Carbon::now('Asia/Jakarta'),
@@ -93,9 +93,9 @@ class PenawaranController extends Controller
     public function statusbg($id)
     {
         $cek = DB::table('penawaranbgs')
-                ->join('rekenings', 'rekenings.id','=','penawaranbgs.bank_id')
+                ->join('banks', 'banks.id','=','penawaranbgs.bank_id')
                 ->join('profits', 'profits.id','=','penawaranbgs.profit_id')
-                ->select('penawaranbgs.*', 'rekenings.nama_bank', 'profits.kode_profit')
+                ->select('penawaranbgs.*', 'banks.nama_bank', 'profits.kode_profit')
                 ->where('penawaranbgs.id', $id)
                 ->first();
         return view('penawaranbg.status', compact('cek'));
@@ -166,22 +166,55 @@ class PenawaranController extends Controller
     // Penawaran Tunai
     public function indextunai()
     {
-        $tunai = DB::table('penawarantunais')->get();
+        $tunai = DB::table('penawarantunais')
+                    ->join('banks','banks.id','=','penawarantunais.bank_id')
+                    ->select('penawarantunais.*', 'banks.nama_bank')
+                    ->get();
         return view('penawarantunai.index', compact('tunai'));
     }
 
     public function createtunai()
     {
-        $bandara_id = Auth::user()->bandara_id;
-        $banks = DB::select("select * from rekenings where bandara_id = '$bandara_id'");
+        $banks = DB::table('banks')->get();
         $units = DB::table('units')->get();
         return view('penawarantunai.create', compact('banks', 'units'));
     }
 
 
-    public function storetunai()
+    public function storetunai(Request $request)
     {
-        # code...
+        $tempo = date('Y-m-d', strtotime($request->jangka_waktu.'days', strtotime($request->tgl_penerimaan)));
+        $min = date('Y-m-d', strtotime($request->masa_sanggah.'days', strtotime($tempo)));
+
+        $cek = [
+            "no_terima" => $request->no_terima,
+            "wilayah" => $request->wilayah,
+            "pekerjaan" => $request->pekerjaan,
+            "vendor_id" => $request->vendor_id,
+            "unit_id" => $request->unit_id,
+            "bank_id" => $request->bank_id,
+            "nama_bank_tunai" => $request->tunai,
+            "tgl_penerimaan" => $request->tgl_penerimaan,
+            "nominal_jamper" => $request->nominal_jamper,
+            "no_kwitansi" => $request->no_kwitansi,
+            "no_berita" => $request->no_berita,
+            "jangka_waktu" => $request->jangka_waktu,
+            "jatuh_tempo" => $tempo,
+            "masa_sanggah" => $request->masa_sanggah,
+            "min_tarik_jaminan" => $min,
+            "ket" => $request->ket,
+            "user_id" => $request->user_id,
+            "profit_id" => $request->profit_id,
+            "file1" => $request->file1,
+            "file2" => $request->file2,
+            "created_at"    => Carbon::now('Asia/Jakarta'),
+            "bulan"         =>Carbon::now('Asia/Jakarta')->format('m'),
+            "tahun"         =>Carbon::now('Asia/Jakarta')->format('Y'),
+            "no_urut"       =>substr($request->no_terima, 3, 4)
+        ];
+
+        $query = DB::table('penawarantunais')->insert($cek);
+        return redirect('admin/penawaran_tunai');
     }
 
     public function destroytunai(Request $request, $id)

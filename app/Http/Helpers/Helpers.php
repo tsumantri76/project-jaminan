@@ -69,8 +69,8 @@ function getnopenawaranbg()
 
 function getnopenawarantunai()
 {
-    $id_bandara = Auth::user()->id_bandara;
-    $query = DB::select("select kode_profit from profits where id_bandara = '$id_bandara'");
+    $profit_id = Auth::user()->profit_id;
+    $query = DB::select("select kode_profit from profits where id = '$profit_id'");
     $kode_profit='';
     foreach ($query as $row){
         $kode_profit =$row->kode_profit;
@@ -79,7 +79,7 @@ function getnopenawarantunai()
     $month = Carbon::now('Asia/Jakarta')->format('m');
     $year = Carbon::now('Asia/Jakarta')->format('Y');
 
-    $query = DB::select("select max(no_urut) as no_urut from penawarantunais where bulan = '$month' and tahun = '$year'");
+    $query = DB::select("select max(no_urut) as no_urut from penawarantunais where tahun = '$year'");
     $current_no='';
     foreach ($query as $row){
         $current_no =$row->no_urut;
@@ -280,4 +280,18 @@ function TanggalIndo($date){
 
   $result = $tgl . " " . $BulanIndo[(int)$bulan-1] . " ". $tahun;  
   return($result);
+}
+
+function strtodate($date)
+{
+    $ketgl = Carbon::parse($date)->format('d/m/Y');
+
+    return $ketgl;
+}
+
+function kerp($uang)
+{
+    $kerupiah = 'Rp. '.number_format($uang,2,',','.');
+
+    return $kerupiah;
 }

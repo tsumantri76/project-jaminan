@@ -10,7 +10,6 @@ class Role extends Model
     use SoftDeletes;
     protected $filablle =
     [
-        'id_user',
         'role'
     ];
     protected $dates = ['deleted_at'];
