@@ -59,6 +59,11 @@
                             {{ method_field('DELETE') }}
 
                             <span>
+                              <a class="btn btn-success btn-xs" title="Export Word" data-toggle="tooltip" href="">
+                                  <i class='fa fa-file-word-o'></i>
+                              </a>
+                            </span>
+                            <span>
                                 <a class="btn btn-info btn-xs" title="Update Status" data-toggle="tooltip" href="">
                                     <i class='glyphicon glyphicon-plus'></i>
                                 </a>

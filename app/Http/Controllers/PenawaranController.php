@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Auth;
 use PDF;
+use PhpOffice\PhpWord\Settings;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -159,8 +160,43 @@ class PenawaranController extends Controller
                     ->select('penawaranbgs.*', 'banks.nama_bank')
                     ->where('penawaranbgs.id', $id)->first();
         $printname = 'WAR-BG'.Carbon::now('Asia/Jakarta')->format('Ymdhis');
-        $pdf = PDF::loadView('penawaranbg.show', compact('cek'))->setPaper('a4', 'potrait')->setWarnings(false);
-        return $pdf->stream($printname.'.pdf');
+        // $pdf = PDF::loadView('penawaranbg.show', compact('cek'));
+        // return $pdf->download($printname.'.docx');
+
+        $file = Storage::get('public/template/templatewarbg.rtf');
+
+        $file = str_replace("#no_terima", $cek->no_terima, $file);
+        $file = str_replace("#vendor_id", $cek->vendor_id, $file);
+        $file = str_replace("#nama_bank", $cek->nama_bank, $file);
+        $file = str_replace("#no_bankgr", $cek->no_bankgr, $file);
+        $file = str_replace("#seri_bankgr", $cek->seri_bankgr, $file);
+        $file = str_replace("#tgl_bankgr", strtodate($cek->tgl_bankgr), $file);
+        $file = str_replace("#nominal_jambg", kerp($cek->nominal_jambg), $file);
+        $file = str_replace("#pekerjaan", $cek->pekerjaan, $file);
+        $file = str_replace("#terbilang", terbilang($cek->nominal_jambg, $style=3), $file);
+        $file = str_replace("#tgl_berlaku", strtodate($cek->tgl_berlaku), $file);
+        $file = str_replace("#tgl_berakhir", strtodate($cek->tgl_berakhir), $file);
+        $file = str_replace("#ket", $cek->ket, $file);
+        $file = str_replace("#dibuat", Carbon::now('Asia/Jakarta')->format('d/m/Y'), $file);
+        if($cek->profit_id == 1)
+        {
+            $file = str_replace("#dep", "Dept. Head Bidang Treasury", $file);
+        }
+        else{
+            $file = str_replace("#dep", "Section Head Bidang Finance", $file);
+        }
+
+        header('Content-Description: File Transfer');
+        header('Content-type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        header("Content-disposition: inline; filename=\"{$printname}.doc\"");
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+        header("Content-length: ".strlen($file));
+        ob_clean();
+        flush();
+        echo $file;
     }
 
     // Penawaran Tunai
@@ -220,5 +256,86 @@ class PenawaranController extends Controller
     public function destroytunai(Request $request, $id)
     {
         # code...
+    }
+
+    public function statustunai($id)
+    {
+        $cek = DB::table('penawarantunais')
+                ->join('banks', 'banks.id','=','penawarantunais.bank_id')
+                ->join('profits', 'profits.id','=','penawarantunais.profit_id')
+                ->select('penawarantunais.*', 'banks.nama_bank', 'profits.kode_profit')
+                ->where('penawarantunais.id', $id)
+                ->first();
+        return view('penawarantunai.status', compact('cek'));
+    }
+
+    public function updatestatustunai(Request $request, $id)
+    {
+        if($request->perpanjangan)
+        {
+            $data = [
+                'perpanjangan' => $request->perpanjangan
+            ];
+
+            $q = DB::table('penawarantunais')
+                    ->where('id', $id)
+                    ->update($data);
+            
+            return redirect('admin/penawaran_tunai');
+        }
+        elseif($request->pencairan)
+        {
+            $data = [
+                'pencairan' => $request->pencairan
+            ];
+
+            $q = DB::table('penawarantunais')
+                    ->where('id', $id)
+                    ->update($data);
+            
+            return redirect('admin/penawaran_tunai');
+        }
+        elseif($request->penarikan)
+        {
+            $data = [
+                'penarikan' => $request->penarikan
+            ];
+
+            $q = DB::table('penawarantunais')
+                    ->where('id', $id)
+                    ->update($data);
+            
+            return redirect('admin/penawaran_tunai');
+        }
+    }
+
+    public function tampilfiletunai($id)
+    {
+        $cek = DB::table('penawarantunais')->where('id', $id)->first();
+        $nama = $cek->nama_file;
+        $printname = 'WAR-BG'.Carbon::now('Asia/Jakarta')->format('Ymdhis');
+        $dir = $cek->path_file;
+        $view = Storage::response($dir); 
+
+        return $view;
+    }
+
+    public function printtunai($id)
+    {
+        $cek = DB::table('penawarantunais')
+                    ->join('banks', 'banks.id','=','penawarantunais.bank_id')
+                    ->select('penawarantunais.*', 'banks.nama_bank')
+                    ->where('penawarantunais.id', $id)->first();
+        $printname = 'WAR-BG'.Carbon::now('Asia/Jakarta')->format('Ymdhis');
+        // $pdf = PDF::loadView('penawaranbg.show', compact('cek'));
+        // return $pdf->download($printname.'.docx');
+
+        $file = Storage::get('public/files/template1.rtf');
+
+        $file = str_replace("#NAMA", $cek->vendor_id, $file);
+        header("Content-type: application/msword");
+        header("Content-disposition: inline; filename=".$printname.".doc");
+        header("Content-length: ".strlen($file));
+        echo $file;
     }
 }
